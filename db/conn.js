@@ -20,6 +20,9 @@ module.exports = {
     });
   },
   getDb: function (db) {
+    while (_db === undefined) {
+    }
+
     return _db.db(db);
   },
 };
