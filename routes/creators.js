@@ -4,9 +4,9 @@ const db = require('../db/conn');
 
 // GET creators
 router.route('/creators').get(function (req, res) {
-  db.getDb()
+  db.getDb('pathology')
     .collection('creators')
-    .find({})
+    .find()
     .toArray(function (err, result) {
       if (err) throw err;
       res.json(result);
