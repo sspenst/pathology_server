@@ -1,12 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db/conn');
+const ObjectId = require('mongodb').ObjectId;
 
-// GET creators
 router.route('/creators').get(function (req, res) {
+  const predicate = {};
+  const id = req.query.id;
+
+  if (id) {
+    predicate['_id'] = ObjectId(id);
+  }
+
   db.getDb('pathology')
     .collection('creators')
-    .find()
+    .find(predicate)
     .toArray(function (err, result) {
       if (err) throw err;
       res.json(result);
