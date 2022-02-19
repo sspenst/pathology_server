@@ -10,4 +10,4 @@ module.exports = new mongoose.Schema({
   packId: {type: mongoose.Schema.Types.ObjectId, required: true},
   psychopathId: Number,
   width: {type: Number, required: true},
-});;
+});

@@ -7,4 +7,4 @@ module.exports = new mongoose.Schema({
   inPathology: Boolean,
   name: {type: String, required: true},
   psychopathId: {type: Number, required: true},
-});;
+});

@@ -5,4 +5,4 @@ module.exports = new mongoose.Schema({
   creatorId: {type: mongoose.Schema.Types.ObjectId, required: true},
   name: {type: String, required: true},
   psychopathId: Number,
-});;
+});

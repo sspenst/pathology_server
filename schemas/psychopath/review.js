@@ -9,4 +9,4 @@ module.exports = new mongoose.Schema({
   text: {type: String, required: true},
   ts: {type: Number, required: true},
   universeId: {type: mongoose.Schema.Types.ObjectId, required: true},
-});;
+});

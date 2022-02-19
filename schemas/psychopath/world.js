@@ -6,4 +6,4 @@ module.exports = new mongoose.Schema({
   name: {type: String, required: true},
   psychopathId: {type: Number, required: true},
   universeId: {type: mongoose.Schema.Types.ObjectId, required: true},
-});;
+});
