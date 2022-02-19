@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db/conn');
-const ObjectId = require('mongodb').ObjectId;
+const ObjectId = require('mongoose').Types.ObjectId;
+const pathologyConn = require('../connections/pathology');
 
 router.route('/packs').get(function (req, res) {
   const predicate = {};
@@ -9,20 +9,20 @@ router.route('/packs').get(function (req, res) {
   const id = req.query.id;
 
   if (creatorId) {
-    predicate['creatorId'] = ObjectId(creatorId);
+    predicate.creatorId = ObjectId(creatorId);
   }
 
   if (id) {
-    predicate['_id'] = ObjectId(id);
+    predicate._id = ObjectId(id);
   }
 
-  db.getDb('pathology')
-    .collection('packs')
-    .find(predicate)
-    .toArray(function (err, result) {
-      if (err) throw err;
-      res.json(result);
-    });
+  pathologyConn.models['Pack'].find(predicate, function(err, result) {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
 });
 
 module.exports = router;

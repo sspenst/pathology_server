@@ -1,23 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db/conn');
-const ObjectId = require('mongodb').ObjectId;
+const ObjectId = require('mongoose').Types.ObjectId;
+const pathologyConn = require('../connections/pathology');
 
 router.route('/creators').get(function (req, res) {
   const predicate = {};
   const id = req.query.id;
 
   if (id) {
-    predicate['_id'] = ObjectId(id);
+    predicate._id = ObjectId(id);
   }
 
-  db.getDb('pathology')
-    .collection('creators')
-    .find(predicate)
-    .toArray(function (err, result) {
-      if (err) throw err;
-      res.json(result);
-    });
+  pathologyConn.models['Creator'].find(predicate, function(err, result) {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
 });
 
 module.exports = router;
