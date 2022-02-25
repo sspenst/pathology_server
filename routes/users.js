@@ -61,7 +61,7 @@ router.post('/login', function(req, res) {
 });
 
 router.get('/logout', withAuth, function(req, res) {
-  res.clearCookie('token').sendStatus(200);
+  res.clearCookie('token', { httpOnly: true, sameSite: 'none', secure: true }).sendStatus(200);
 });
 
 router.get('/checkToken', withAuth, function(req, res) {
