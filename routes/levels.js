@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const ObjectId = require('mongoose').Types.ObjectId;
-const pathologyConn = require('../connections/pathology');
+const { Level, Pack } = require('../connections/pathology');
 
-router.route('/levels').get(function (req, res) {
+router.get('/levels', function (req, res) {
   const predicate = {};
   const id = req.query.id;
   const packId = req.query.packId;
@@ -16,7 +16,7 @@ router.route('/levels').get(function (req, res) {
     predicate.packId = ObjectId(packId);
   }
 
-  pathologyConn.models['Level'].find(predicate, function(err, result) {
+  Level.find(predicate, function(err, result) {
     if (err) {
       res.send(err);
     } else {
@@ -25,7 +25,7 @@ router.route('/levels').get(function (req, res) {
   });
 });
 
-router.route('/levels/leastmoves').get(async function (req, res) {
+router.get('/levels/leastmoves', async function (req, res) {
   const predicate = {};
   const packIds = req.query.packIds;
 
@@ -33,7 +33,7 @@ router.route('/levels/leastmoves').get(async function (req, res) {
     predicate.packId = {$in: packIds.split(',').map(p => ObjectId(p))};
   }
 
-  const levels = await pathologyConn.models['Level'].find(predicate);
+  const levels = await Level.find(predicate);
 
   // packIds mapping to levelIds mapping to leastMoves
   const result = {};
@@ -52,9 +52,9 @@ router.route('/levels/leastmoves').get(async function (req, res) {
   res.json(result);
 });
 
-router.route('/levels/allleastmoves').get(async function (req, res) {
-  const levelsAsync = pathologyConn.models['Level'].find();
-  const packs = await pathologyConn.models['Pack'].find();
+router.get('/levels/allleastmoves', async function (req, res) {
+  const levelsAsync = Level.find();
+  const packs = await Pack.find();
 
   // creatorIds mapping to packIds mapping to levelIds mapping to leastMoves
   const result = {};

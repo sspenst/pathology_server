@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const ObjectId = require('mongoose').Types.ObjectId;
-const pathologyConn = require('../connections/pathology');
+const { Creator } = require('../connections/pathology');
 
-router.route('/creators').get(function (req, res) {
+router.get('/creators', function (req, res) {
   const predicate = {};
   const id = req.query.id;
 
@@ -11,7 +11,7 @@ router.route('/creators').get(function (req, res) {
     predicate._id = ObjectId(id);
   }
 
-  pathologyConn.models['Creator'].find(predicate, function(err, result) {
+  Creator.find(predicate, function(err, result) {
     if (err) {
       res.send(err);
     } else {

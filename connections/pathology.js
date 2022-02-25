@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const pathologyConn = mongoose.createConnection(
+const connection = mongoose.createConnection(
   process.env.PATHOLOGY_URI,
   {useNewUrlParser: true, useUnifiedTopology: true},
   function(err) {
@@ -12,8 +12,10 @@ const pathologyConn = mongoose.createConnection(
   }
 );
 
-pathologyConn.model('Creator', require('../schemas/pathology/creator'));
-pathologyConn.model('Level', require('../schemas/pathology/level'));
-pathologyConn.model('Pack', require('../schemas/pathology/pack'));
-
-module.exports = pathologyConn;
+module.exports = {
+  Creator: connection.model('Creator', require('../schemas/pathology/creator')),
+  Level: connection.model('Level', require('../schemas/pathology/level')),
+  Pack: connection.model('Pack', require('../schemas/pathology/pack')),
+  pathologyConn: connection,
+  User: connection.model('User', require('../schemas/pathology/user')),
+}

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const psychopathConn = mongoose.createConnection(
+const connection = mongoose.createConnection(
   process.env.PSYCHOPATH_URI,
   {useNewUrlParser: true, useUnifiedTopology: true},
   function(err) {
@@ -12,9 +12,10 @@ const psychopathConn = mongoose.createConnection(
   }
 );
 
-psychopathConn.model('Level', require('../schemas/psychopath/level'));
-psychopathConn.model('Review', require('../schemas/psychopath/review'));
-psychopathConn.model('Universe', require('../schemas/psychopath/universe'));
-psychopathConn.model('World', require('../schemas/psychopath/world'));
-
-module.exports = psychopathConn;
+module.exports = {
+  psychopathConn: connection,
+  PsychopathLevel: connection.model('Level', require('../schemas/psychopath/level')),
+  Review: connection.model('Review', require('../schemas/psychopath/review')),
+  Universe: connection.model('Universe', require('../schemas/psychopath/universe')),
+  World: connection.model('World', require('../schemas/psychopath/world')),
+}

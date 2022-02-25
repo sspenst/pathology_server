@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const ObjectId = require('mongoose').Types.ObjectId;
-const pathologyConn = require('../connections/pathology');
-const psychopathConn = require('../connections/psychopath');
+const { Creator, Level, Pack } = require('../connections/pathology');
+const { PsychopathLevel, Review, Universe, World } = require('../connections/psychopath');
 
 // GET universes
-router.route('/psychopath/universes').get(async function (req, res) {
-  const universesAsync = psychopathConn.models['Universe'].find({hasWorld: true});
-  const creators = await pathologyConn.models['Creator'].find();
+router.get('/psychopath/universes', async function (req, res) {
+  const universesAsync = Universe.find({hasWorld: true});
+  const creators = await Creator.find();
   const psychopathIds = creators.map(c => c.psychopathId).filter(id => id);
   const universes = await universesAsync;
 
@@ -21,11 +21,11 @@ router.route('/psychopath/universes').get(async function (req, res) {
 });
 
 // GET worlds by universeId
-router.route('/psychopath/worlds/:universeId').get(async function (req, res) {
-  const worldsAsync = psychopathConn.models['World'].find({
+router.get('/psychopath/worlds/:universeId', async function (req, res) {
+  const worldsAsync = World.find({
     universeId: ObjectId(req.params.universeId),
   });
-  const packs = await pathologyConn.models['Pack'].find();
+  const packs = await Pack.find();
   const psychopathIds = packs.map(p => p.psychopathId).filter(id => id);
   const worlds = await worldsAsync;
 
@@ -39,11 +39,11 @@ router.route('/psychopath/worlds/:universeId').get(async function (req, res) {
 });
 
 // GET levels by worldId
-router.route('/psychopath/levels/:worldId').get(async function (req, res) {
-  const levelsAsync = psychopathConn.models['Level'].find({
+router.get('/psychopath/levels/:worldId', async function (req, res) {
+  const levelsAsync = PsychopathLevel.find({
     worldId: ObjectId(req.params.worldId)
   });
-  const pathologyLevels = await pathologyConn.models['Level'].find();
+  const pathologyLevels = await Level.find();
   const psychopathIds = pathologyLevels.map(p => p.psychopathId);
   const levels = await levelsAsync;
 
@@ -57,12 +57,12 @@ router.route('/psychopath/levels/:worldId').get(async function (req, res) {
 });
 
 // GET reviews by levelId
-router.route('/psychopath/reviews/:levelId').get(async function (req, res) {
-  const reviews = await psychopathConn.models['Review'].find({
+router.get('/psychopath/reviews/:levelId', async function (req, res) {
+  const reviews = await Review.find({
     levelId: ObjectId(req.params.levelId)
   });
   const universes = reviews.map(
-    r => psychopathConn.models['Universe'].find({_id: r.universeId})
+    r => Universe.find({_id: r.universeId})
   );
 
   for (let i = 0; i < universes.length; i++) {
