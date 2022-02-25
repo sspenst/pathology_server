@@ -10,7 +10,7 @@ function addTokenCookie(res, email) {
   const token = jwt.sign(payload, process.env.SECRET, {
     expiresIn: '1d'
   });
-  res.cookie('token', token, { httpOnly: true, sameSite: 'none', secure: true });
+  res.cookie('token', token, { httpOnly: true, maxAge: 86400, sameSite: 'none', secure: true });
 }
 
 router.post('/signup', function(req, res) {
