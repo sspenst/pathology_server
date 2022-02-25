@@ -15,7 +15,11 @@ function addTokenCookie(res, email) {
 
 router.post('/signup', function(req, res) {
   const { email, name, password } = req.body;
-  const user = new User({ email, name, password });
+  const user = new User({
+    email: email,
+    name: name,
+    password: password
+  });
 
   user.save(function(err) {
     if (err) {
