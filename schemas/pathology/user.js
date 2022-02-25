@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 const userSchema = new mongoose.Schema({
+  _id: {type: mongoose.Schema.Types.ObjectId, required: true},
   email: {type: String, required: true, unique: true},
   moves: String,
   name: {type: String, required: true, unique: true},
@@ -28,6 +29,10 @@ userSchema.pre('save', function(next) {
     next();
   }
 });
+
+userSchema.methods.getMoves = function() {
+  return !this.moves ? {} : JSON.parse(this.moves);
+}
 
 userSchema.methods.isCorrectPassword = function(password, callback) {
   bcrypt.compare(password, this.password, function(err, same) {

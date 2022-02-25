@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { User } = require('../connections/pathology');
+const { Level, User } = require('../connections/pathology');
 const jwt = require('jsonwebtoken');
 const withAuth = require('../middleware');
 
@@ -60,6 +60,37 @@ router.post('/login', function(req, res) {
   });
 });
 
+router.get('/leaderboard', async function(req, res) {
+  const levelsAsync = Level.find();
+  const users = await User.find();
+  const levels = await levelsAsync;
+  const leastMoves = {};
+  const result = [];
+
+  for (let i = 0; i < levels.length; i++) {
+    leastMoves[levels[i]._id] = levels[i].leastMoves;
+  }
+
+  for (let i = 0; i < users.length; i++) {
+    const user = users[i];
+    const moves = user.getMoves();
+    let completed = 0;
+
+    for (let levelId in moves) {
+      if (moves[levelId] <= leastMoves[levelId]) {
+        completed++;
+      }
+    }
+
+    result.push({
+      completed: completed,
+      name: user.name,
+    });
+  }
+
+  res.json(result);
+});
+
 router.get('/logout', withAuth, function(req, res) {
   res.clearCookie('token', { httpOnly: true, sameSite: 'none', secure: true }).sendStatus(200);
 });
@@ -83,7 +114,7 @@ router.get('/moves', withAuth, function(req, res) {
     if (err) {
       res.send(err);
     } else {
-      res.send(!user.moves ? {} : JSON.parse(user.moves));
+      res.send(user.getMoves());
     }
   });
 });
@@ -95,7 +126,7 @@ router.put('/moves', withAuth, function(req, res) {
     if (err) {
       res.send(err);
     } else {
-      const userMoves = !user.moves ? {} : JSON.parse(user.moves);
+      const userMoves = user.getMoves();
       const bestMoves = userMoves[levelId];
 
       if (!bestMoves || moves < bestMoves) {
