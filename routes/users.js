@@ -3,14 +3,21 @@ const router = express.Router();
 const { Level, User } = require('../connections/pathology');
 const jwt = require('jsonwebtoken');
 const withAuth = require('../middleware');
+const COOKIE_OPTIONS = {
+  domain: process.env.LOCAL ? 'localhost' : 'herokuapp.com',
+  httpOnly: true,
+  maxAge: 1000 * 60 * 60 * 24,
+  sameSite: 'strict',
+  secure: !process.env.LOCAL,
+  signed: true,
+};
 
-function addTokenCookie(res, email) {
-  // Issue token
+function issueTokenCookie(res, email) {
   const payload = { email };
   const token = jwt.sign(payload, process.env.SECRET, {
     expiresIn: '1d'
   });
-  res.cookie('token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000, sameSite: 'none', secure: true });
+  res.cookie('token', token, COOKIE_OPTIONS);
 }
 
 router.post('/signup', function(req, res) {
@@ -26,7 +33,7 @@ router.post('/signup', function(req, res) {
       res.status(500)
         .send("Error registering new user please try again.");
     } else {
-      addTokenCookie(res, email);
+      issueTokenCookie(res, email);
       res.sendStatus(200);
     }
   });
@@ -56,7 +63,7 @@ router.post('/login', function(req, res) {
             error: 'Incorrect email or password'
           });
         } else {
-          addTokenCookie(res, email);
+          issueTokenCookie(res, email);
           res.sendStatus(200);
         }
       });
@@ -96,7 +103,7 @@ router.get('/leaderboard', async function(req, res) {
 });
 
 router.get('/logout', withAuth, function(req, res) {
-  res.clearCookie('token', { httpOnly: true, sameSite: 'none', secure: true }).sendStatus(200);
+  res.clearCookie('token', COOKIE_OPTIONS).sendStatus(200);
 });
 
 router.get('/checkToken', withAuth, function(req, res) {
@@ -108,7 +115,11 @@ router.get('/user', withAuth, function(req, res) {
     if (err) {
       res.send(err);
     } else {
-      res.send(user.toJSON());
+      if (!user) {
+        res.sendStatus(404);
+      } else {
+        res.send(user.toJSON());
+      }
     }
   });
 });
