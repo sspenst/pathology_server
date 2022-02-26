@@ -6,8 +6,10 @@ const withAuth = require('../middleware');
 const COOKIE_OPTIONS = {
   domain: process.env.DOMAIN || 'localhost',
   httpOnly: true,
-  maxAge: 1000 * 60 * 60 * 24,
-  sameSite: 'none',
+  // TODO: expiry date has to be identical so that safari removes it
+  // maxAge: 1000 * 60 * 60 * 24,
+  path: '/',
+  sameSite: 'strict',
   secure: !process.env.LOCAL,
   signed: true,
 };
@@ -66,9 +68,8 @@ router.post('/login', function(req, res) {
             error: 'Incorrect email or password'
           });
         } else {
-          // issueTokenCookie(res, email);
-          // res.sendStatus(200);
-          res.send(getToken(email));
+          issueTokenCookie(res, email);
+          res.sendStatus(200);
         }
       });
     }
