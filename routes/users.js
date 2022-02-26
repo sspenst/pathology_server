@@ -7,7 +7,7 @@ const COOKIE_OPTIONS = {
   domain: process.env.DOMAIN,
   httpOnly: true,
   maxAge: 1000 * 60 * 60 * 24,
-  sameSite: 'lax',
+  sameSite: 'none',
   secure: !process.env.LOCAL,
   signed: true,
 };
