@@ -4,7 +4,7 @@ const { Level, User } = require('../connections/pathology');
 const jwt = require('jsonwebtoken');
 const withAuth = require('../middleware');
 const COOKIE_OPTIONS = {
-  domain: process.env.LOCAL ? 'localhost' : 'herokuapp.com',
+  domain: process.env.DOMAIN,
   httpOnly: true,
   maxAge: 1000 * 60 * 60 * 24,
   sameSite: 'strict',
