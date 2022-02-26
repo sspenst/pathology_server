@@ -7,7 +7,8 @@ const port = process.env.PORT || 8000;
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(cors({
   credentials: true,
-  origin: process.env.ORIGIN,
+  origin: ['https://path.sspenst.com', 'https://www.path.sspenst.com'],
+  // origin: ['http://localhost:3000'],
 }));
 app.use(express.json());
 app.use(require('./routes/creators'));

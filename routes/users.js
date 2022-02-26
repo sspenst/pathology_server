@@ -4,7 +4,7 @@ const { Level, User } = require('../connections/pathology');
 const jwt = require('jsonwebtoken');
 const withAuth = require('../middleware');
 const COOKIE_OPTIONS = {
-  domain: process.env.DOMAIN,
+  domain: process.env.DOMAIN || 'localhost',
   httpOnly: true,
   maxAge: 1000 * 60 * 60 * 24,
   sameSite: 'none',
@@ -12,12 +12,15 @@ const COOKIE_OPTIONS = {
   signed: true,
 };
 
-function issueTokenCookie(res, email) {
+function getToken(email) {
   const payload = { email };
-  const token = jwt.sign(payload, process.env.SECRET, {
+  return jwt.sign(payload, process.env.SECRET, {
     expiresIn: '1d'
   });
-  res.cookie('token', token, COOKIE_OPTIONS);
+}
+
+function issueTokenCookie(res, email) {
+  res.cookie('token', getToken(email), COOKIE_OPTIONS);
 }
 
 router.post('/signup', function(req, res) {
@@ -63,8 +66,9 @@ router.post('/login', function(req, res) {
             error: 'Incorrect email or password'
           });
         } else {
-          issueTokenCookie(res, email);
-          res.sendStatus(200);
+          // issueTokenCookie(res, email);
+          // res.sendStatus(200);
+          res.send(getToken(email));
         }
       });
     }
