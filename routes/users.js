@@ -9,8 +9,9 @@ const COOKIE_OPTIONS = {
   // TODO: expiry date has to be identical so that safari removes it
   // maxAge: 1000 * 60 * 60 * 24,
   path: '/',
-  sameSite: 'strict',
-  secure: !process.env.LOCAL,
+  sameSite: 'none',
+  // secure: !process.env.LOCAL,
+  secure: false,
   signed: true,
 };
 
