@@ -10,8 +10,8 @@ app.use(cors({
   origin: process.env.LOCAL ? ['http://localhost:3000'] : [
     'https://path.sspenst.com',
     'https://www.path.sspenst.com',
-    'https://pathology.sspenst.com',
-    'https://www.pathology.sspenst.com',
+    'http://pathology.sspenst.com',
+    'http://www.pathology.sspenst.com',
   ],
 }));
 app.use(express.json());
