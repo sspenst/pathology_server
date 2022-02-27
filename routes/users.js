@@ -3,17 +3,26 @@ const router = express.Router();
 const { Level, User } = require('../connections/pathology');
 const jwt = require('jsonwebtoken');
 const withAuth = require('../middleware');
-const COOKIE_OPTIONS = {
-  domain: process.env.DOMAIN || 'localhost',
-  httpOnly: true,
-  // TODO: expiry date has to be identical so that safari removes it
-  // maxAge: 1000 * 60 * 60 * 24,
-  path: '/',
-  sameSite: 'lax',
-  // secure: !process.env.LOCAL,
-  secure: false,
-  signed: true,
-};
+
+function getCookieOptions(isNewCookie) {
+  const options = {
+    domain: process.env.LOCAL ? 'localhost' : 'sspenst.com',
+    httpOnly: true,
+    sameSite: 'strict',
+    // TODO: uncomment this once both sspenst.com sites are https
+    // secure: !process.env.LOCAL,
+    secure: false,
+    signed: true,
+  };
+
+  // maxAge must not be set when deleting a cookie
+  if (isNewCookie) {
+    // valid for 1 day
+    options.maxAge = 1000 * 60 * 60 * 24;
+  }
+
+  return options;
+}
 
 function getToken(email) {
   const payload = { email };
@@ -23,7 +32,7 @@ function getToken(email) {
 }
 
 function issueTokenCookie(res, email) {
-  res.cookie('token', getToken(email), COOKIE_OPTIONS);
+  res.cookie('token', getToken(email), getCookieOptions(true));
 }
 
 router.post('/signup', function(req, res) {
@@ -109,7 +118,7 @@ router.get('/leaderboard', async function(req, res) {
 });
 
 router.get('/logout', withAuth, function(req, res) {
-  res.clearCookie('token', COOKIE_OPTIONS).sendStatus(200);
+  res.clearCookie('token', getCookieOptions(false)).sendStatus(200);
 });
 
 router.get('/checkToken', withAuth, function(req, res) {
