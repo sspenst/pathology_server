@@ -8,8 +8,24 @@
   ],
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "/"
+      "src": "/creators(.*)",
+      "dest": "/routes/creators.js"
+    },
+    {
+      "src": "/levels(.*)",
+      "dest": "/routes/levels.js"
+    },
+    {
+      "src": "/packs(.*)",
+      "dest": "/routes/packs.js"
+    },
+    {
+      "src": "/psychopath(.*)",
+      "dest": "/routes/psychopath.js"
+    },
+    {
+      "src": "/users(.*)",
+      "dest": "/routes/users.js"
     }
   ]
 }
