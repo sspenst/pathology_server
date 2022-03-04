@@ -56,7 +56,7 @@ router.get('/levels/allleastmoves', async function (req, res) {
   const levelsAsync = Level.find();
   const packs = await Pack.find();
 
-  // creatorIds mapping to packIds mapping to levelIds mapping to leastMoves
+  // creatorIds mapping to levelIds mapping to leastMoves
   const result = {};
   const packIdToCreatorId = {};
 
@@ -68,7 +68,6 @@ router.get('/levels/allleastmoves', async function (req, res) {
       result[creatorId] = {};
     }
 
-    result[creatorId][pack._id] = {};
     packIdToCreatorId[pack._id] = creatorId;
   }
 
@@ -79,7 +78,7 @@ router.get('/levels/allleastmoves', async function (req, res) {
     const packId = level.packId;
     const creatorId = packIdToCreatorId[packId];
 
-    result[creatorId][packId][level._id] = level.leastMoves;
+    result[creatorId][level._id] = level.leastMoves;
   }
 
   res.json(result);
