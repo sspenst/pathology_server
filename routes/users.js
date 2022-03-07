@@ -12,7 +12,6 @@ function getCookieOptions(isNewCookie) {
     // TODO: uncomment this once both sspenst.com sites are https
     // secure: !process.env.LOCAL,
     secure: false,
-    signed: true,
   };
 
   // maxAge must not be set when deleting a cookie

@@ -4,7 +4,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 require('dotenv').config({ path: './config.env' });
 const port = process.env.PORT || 8000;
-app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(cookieParser());
 app.use(cors({
   credentials: true,
   origin: process.env.LOCAL ? ['http://localhost:3000'] : [
